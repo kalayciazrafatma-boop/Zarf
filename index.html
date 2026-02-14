@@ -18,9 +18,32 @@
 
         .container {
             position: relative;
-            width: 400px; /* Zarf genişliği */
-            height: 250px; /* Zarf yüksekliği */
+            width: 400px; /* Zarfın başlangıç genişliği */
+            height: 250px; /* Zarfın başlangıç yüksekliği */
             perspective: 1000px; /* 3D efekti için */
+            display: flex; /* İçeriklerin ortalanması için */
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Zarfın dış sarıcısı - bu kaybolacak */
+        .envelope-wrapper {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 2; /* Mektubun üzerinde durması için */
+            pointer-events: auto; /* Tıklanabilir */
+            transition: opacity 0.8s ease-in-out, transform 0.8s ease-in-out;
+        }
+
+        /* Zarfın kaybolma efekti */
+        .envelope-wrapper.open {
+            opacity: 0;
+            transform: scale(0.8) translateY(-30px); /* Küçülerek ve yukarı kayarak kaybolur */
+            pointer-events: none; /* Tıklanamaz hale getir */
+            transition-delay: 0.7s; /* Mektup çıktıktan sonra kaybolmaya başlasın */
         }
 
         .envelope {
@@ -30,14 +53,7 @@
             background-color: #ffb6c1; /* Zarf rengi: Açık pembe */
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-            transition: transform 1s ease-in-out, background-color 0.5s;
             transform-style: preserve-3d;
-            cursor: pointer;
-            z-index: 2; /* Mektubun üstünde durması için */
-        }
-
-        .envelope:hover {
-            background-color: #ffcbd6; /* Üzerine gelince renk değişimi */
         }
 
         /* Zarfın üst kapağı */
@@ -51,7 +67,7 @@
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             transform-origin: top; /* Üstten dönecek */
-            transition: transform 1s ease-in-out, background-color 0.5s;
+            transition: transform 1s ease-in-out;
             z-index: 3; /* En üstte durması için */
         }
 
@@ -66,82 +82,88 @@
             border-radius: 10px;
         }
 
-        /* Açıldığında zarf kapağının görünümü */
-        .envelope.open .envelope-flap {
+        /* Zarf kapağının açılma görünümü */
+        .envelope-wrapper.open .envelope-flap {
             transform: rotateX(180deg); /* Kapağı aç */
-            background-color: #ff8c9a;
-        }
-        .envelope.open .envelope-flap::before {
-            background: linear-gradient(135deg, #ff8c9a 50%, #ffb6c1 50%);
         }
 
+        /* Mektup stilleri */
         .letter {
             position: absolute;
-            top: 10%;
-            left: 10%;
-            width: 80%;
-            height: 80%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0.7); /* Başlangıçta zarfın içinde gibi küçük */
+            width: 75%; /* Başlangıç genişliği */
+            height: 65%; /* Başlangıç yüksekliği */
             background-color: white;
-            border-radius: 5px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+            padding: 30px; /* Daha fazla padding */
             box-sizing: border-box;
-            transform: translateY(100%) scale(0.8); /* Başlangıçta zarfın altında ve küçük */
-            opacity: 0;
-            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+            opacity: 0; /* Başlangıçta gizli */
             z-index: 1; /* Zarfın altında */
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+            pointer-events: none; /* Tıklanabilir değil */
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out, width 1s ease-in-out, height 1s ease-in-out;
+            max-width: 600px; /* Mektubun maksimum genişliği */
+            max-height: 450px; /* Mektubun maksimum yüksekliği */
         }
 
-        .envelope.open .letter {
-            transform: translateY(0) scale(1); /* Zarf açılınca yukarı çık ve büyüt */
+        /* Mektubun açıldığında görünümü ve büyümesi */
+        .letter.visible-letter {
+            transform: translate(-50%, -50%) scale(1.1); /* Biraz büyür */
+            width: 90%; /* Genişler */
+            height: 95%; /* Yükselir */
             opacity: 1;
-            transition-delay: 0.5s; /* Zarf kapağı açıldıktan sonra mektup gelsin */
+            pointer-events: auto; /* Tıklanabilir hale gelir */
+            transition-delay: 0.3s; /* Zarf kapağı açılmaya başlarken mektup belirginleşsin */
         }
 
         .letter-content {
-            font-size: 1.1em;
-            line-height: 1.6;
+            font-size: 1.5em; /* Yazı büyüklüğü arttırıldı */
+            line-height: 1.7; /* Okunabilirlik için satır aralığı */
             color: #333;
-            max-height: calc(100% - 60px); /* Buton için boşluk bırak */
+            max-height: calc(100% - 80px); /* Buton ve imza için boşluk bırak */
             overflow-y: auto; /* Yazı çok olursa kaydırılabilir */
+            margin-bottom: 20px;
         }
 
         .photo-button {
             display: block;
-            margin-top: 20px;
-            padding: 10px 20px;
+            margin-top: auto; /* Butonu alta hizala */
+            padding: 12px 25px; /* Daha büyük buton */
             background-color: #ff69b4; /* Pembe buton */
             color: white;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px; /* Yuvarlak kenarlar */
             cursor: pointer;
-            font-size: 1em;
+            font-size: 1.1em; /* Buton yazısı da büyük */
             align-self: flex-start; /* Sola hizala */
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .photo-button:hover {
             background-color: #e04b99; /* Buton üzerine gelince koyu pembe */
+            transform: translateY(-2px); /* Hafif yukarı kalkma efekti */
         }
 
         .photo-container {
             position: absolute;
             top: 50%;
             left: 50%;
-            transform: translate(-50%, -50%);
-            max-width: 90%;
-            max-height: 90%;
-            background-color: rgba(255, 255, 255, 0.95);
-            border-radius: 10px;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
-            padding: 20px;
+            transform: translate(-50%, -50%) scale(0.8); /* Başlangıçta biraz küçülmüş */
+            max-width: 95%; /* Konteyner daha geniş */
+            max-height: 95%; /* Konteyner daha yüksek */
+            background-color: rgba(255, 255, 255, 0.98);
+            border-radius: 15px; /* Daha yuvarlak kenarlar */
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            padding: 30px;
             box-sizing: border-box;
             display: none; /* Başlangıçta gizli */
             z-index: 10;
-            transition: opacity 0.5s ease-in-out;
+            transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
             opacity: 0;
             text-align: center;
         }
@@ -149,47 +171,63 @@
         .photo-container.visible {
             display: block;
             opacity: 1;
+            transform: translate(-50%, -50%) scale(1); /* Normal boyutuna gelir */
         }
 
         .photo-container img {
             max-width: 100%;
-            max-height: 400px; /* Fotoğrafın maksimum yüksekliği */
-            border-radius: 8px;
-            display: block; /* Dış boşlukları kaldırmak için */
-            margin: 0 auto 15px auto;
+            max-height: 550px; /* Fotoğrafın maksimum yüksekliği arttırıldı */
+            width: auto; /* Genişliği otomatik ayarla */
+            height: auto; /* Yüksekliği otomatik ayarla */
+            border-radius: 10px;
+            display: block;
+            margin: 0 auto 20px auto; /* Alttan boşluk bırak */
+        }
+
+        .photo-container p {
+            font-size: 1.1em;
+            color: #555;
+            margin-bottom: 20px;
         }
 
         .photo-container .close-button {
             background-color: #dc143c; /* Kapat butonu için kırmızı */
             color: white;
             border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px 20px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 0.9em;
-            transition: background-color 0.3s ease;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
         }
 
         .photo-container .close-button:hover {
             background-color: #b20e2f;
+            transform: translateY(-2px);
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="envelope" onclick="toggleEnvelope()">
-            <div class="envelope-flap"></div>
-            <div class="letter">
-                <div class="letter-content">
-                    <!-- BURADAKİ METİN DEĞİŞTİRİLDİ -->
-                    <p> Merhaba Canım Dostum,</p>
-                    <p>Hayat bazen yorucu bir labirent gibi olsa da, senin varlığın benim yolumu hep aydınlattı. Liseden bugüne, tam 4 yıldır her anımı güzelleştirdiğin için teşekkür ederim. Bu butona her bastığında sadece geçmişe bakmıyoruz; her zaman arkanda, bir adım ötendeyim. Kalbimdeki yerin çok özel, iyi ki hayatımdasın!</p>
-                    <p>Sevgilerle,</p>
-                    <p>Azra</p>
-                </div>
-                <button class="photo-button" onclick="showPhoto(event)">Pembe Fotoğrafı Gör!</button>
+        <!-- Zarfın dış sarıcısı - tıklanınca bu "open" sınıfını alacak -->
+        <div class="envelope-wrapper" onclick="toggleEnvelope(this)">
+            <div class="envelope">
+                <div class="envelope-flap"></div>
             </div>
         </div>
+
+        <!-- Mektup - zarf kaybolunca bu belirecek -->
+        <div class="letter" id="theLetter">
+            <div class="letter-content">
+                <p> Merhaba Canım Dostum,</p>
+                <p>Hayat bazen yorucu bir labirent gibi olsa da, senin varlığın benim yolumu hep aydınlattı. Liseden bugüne, tam 4 yıldır her anımı güzelleştirdiğin için teşekkür ederim. Bu butona her bastığında sadece geçmişe bakmıyoruz; her zaman arkanda, bir adım ötendeyim. Kalbimdeki yerin çok özel, iyi ki hayatımdasın!</p>
+                <p style="text-align: right; margin-top: 25px;">Sevgilerle,</p>
+                <p style="text-align: right;">Azra</p>
+            </div>
+            <button class="photo-button" onclick="showPhoto(event)">Pembe Fotoğrafı Gör!</button>
+        </div>
+
+        <!-- Fotoğraf konteyneri -->
         <div class="photo-container" id="photoContainer">
             <!-- BURAYI DÜZENLEMELİSİNİZ! -->
             <!-- GitHub deponuza yüklediğiniz fotoğrafın adını buraya yazın. -->
@@ -202,13 +240,14 @@
     </div>
 
     <script>
-        function toggleEnvelope() {
-            const envelope = document.querySelector('.envelope');
-            envelope.classList.toggle('open');
+        function toggleEnvelope(wrapper) {
+            wrapper.classList.toggle('open'); // envelope-wrapper'a 'open' sınıfını ekle/kaldır
+            const letter = document.getElementById('theLetter');
+            letter.classList.toggle('visible-letter'); // Mektuba 'visible-letter' sınıfını ekle/kaldır
         }
 
         function showPhoto(event) {
-            event.stopPropagation(); // Zarfın kapanmasını engellemek için
+            event.stopPropagation(); // Olayın yukarı yayılmasını (zarfın kapanmasını) engelle
             const photoContainer = document.getElementById('photoContainer');
             photoContainer.classList.add('visible');
         }
@@ -220,4 +259,5 @@
     </script>
 </body>
 </html>
+
 
