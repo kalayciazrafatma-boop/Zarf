@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sihirli Zarf</title>
+    <title>Sihirli Pembe Zarf</title>
     <style>
         body {
             display: flex;
@@ -11,7 +11,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            background-color: #f0f0f0;
+            background-color: #ffe0f0; /* Açık pembe arka plan */
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             overflow: hidden; /* Taşmaları engellemek için */
         }
@@ -27,7 +27,7 @@
             position: absolute;
             width: 100%;
             height: 100%;
-            background-color: #f9d423; /* Zarf rengi */
+            background-color: #ffb6c1; /* Zarf rengi: Açık pembe */
             border-radius: 10px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
             transition: transform 1s ease-in-out, background-color 0.5s;
@@ -37,7 +37,7 @@
         }
 
         .envelope:hover {
-            background-color: #fce883; /* Üzerine gelince renk değişimi */
+            background-color: #ffcbd6; /* Üzerine gelince renk değişimi */
         }
 
         /* Zarfın üst kapağı */
@@ -47,7 +47,7 @@
             left: 0;
             width: 100%;
             height: 50%; /* Kapağın yarısı */
-            background-color: #f9d423;
+            background-color: #ffb6c1; /* Zarf kapağı rengi */
             border-bottom-left-radius: 10px;
             border-bottom-right-radius: 10px;
             transform-origin: top; /* Üstten dönecek */
@@ -62,17 +62,17 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #f9d423 50%, #f7c900 50%); /* Zarf kapağı üçgen efekti */
+            background: linear-gradient(135deg, #ffb6c1 50%, #ff8c9a 50%); /* Zarf kapağı üçgen efekti */
             border-radius: 10px;
         }
 
         /* Açıldığında zarf kapağının görünümü */
         .envelope.open .envelope-flap {
             transform: rotateX(180deg); /* Kapağı aç */
-            background-color: #f7c900;
+            background-color: #ff8c9a;
         }
         .envelope.open .envelope-flap::before {
-            background: linear-gradient(135deg, #f7c900 50%, #f9d423 50%);
+            background: linear-gradient(135deg, #ff8c9a 50%, #ffb6c1 50%);
         }
 
         .letter {
@@ -104,4 +104,120 @@
         .letter-content {
             font-size: 1.1em;
             line-height: 1.6;
-            color: #33
+            color: #333;
+            max-height: calc(100% - 60px); /* Buton için boşluk bırak */
+            overflow-y: auto; /* Yazı çok olursa kaydırılabilir */
+        }
+
+        .photo-button {
+            display: block;
+            margin-top: 20px;
+            padding: 10px 20px;
+            background-color: #ff69b4; /* Pembe buton */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1em;
+            align-self: flex-start; /* Sola hizala */
+            transition: background-color 0.3s ease;
+        }
+
+        .photo-button:hover {
+            background-color: #e04b99; /* Buton üzerine gelince koyu pembe */
+        }
+
+        .photo-container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 90%;
+            max-height: 90%;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 10px;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            padding: 20px;
+            box-sizing: border-box;
+            display: none; /* Başlangıçta gizli */
+            z-index: 10;
+            transition: opacity 0.5s ease-in-out;
+            opacity: 0;
+            text-align: center;
+        }
+
+        .photo-container.visible {
+            display: block;
+            opacity: 1;
+        }
+
+        .photo-container img {
+            max-width: 100%;
+            max-height: 400px; /* Fotoğrafın maksimum yüksekliği */
+            border-radius: 8px;
+            display: block; /* Dış boşlukları kaldırmak için */
+            margin: 0 auto 15px auto;
+        }
+
+        .photo-container .close-button {
+            background-color: #dc143c; /* Kapat butonu için kırmızı */
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: background-color 0.3s ease;
+        }
+
+        .photo-container .close-button:hover {
+            background-color: #b20e2f;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="envelope" onclick="toggleEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="letter">
+                <div class="letter-content">
+                    <!-- BURADAKİ METİN DEĞİŞTİRİLDİ -->
+                    <p> Merhaba Canım Dostum,</p>
+                    <p>Hayat bazen yorucu bir labirent gibi olsa da, senin varlığın benim yolumu hep aydınlattı. Liseden bugüne, tam 4 yıldır her anımı güzelleştirdiğin için teşekkür ederim. Bu butona her bastığında sadece geçmişe bakmıyoruz; her zaman arkanda, bir adım ötendeyim. Kalbimdeki yerin çok özel, iyi ki hayatımdasın!</p>
+                    <p>Sevgilerle,</p>
+                    <p>Azra</p>
+                </div>
+                <button class="photo-button" onclick="showPhoto(event)">Pembe Fotoğrafı Gör!</button>
+            </div>
+        </div>
+        <div class="photo-container" id="photoContainer">
+            <!-- BURAYI DÜZENLEMELİSİNİZ! -->
+            <!-- GitHub deponuza yüklediğiniz fotoğrafın adını buraya yazın. -->
+            <!-- Örneğin, fotoğrafınızın adı 'benim_pembe_fotom.jpg' ise src="benim_pembe_fotom.jpg" olacaktır. -->
+            <img src="surpriz_fotograf.jpg" alt="Sürpriz Pembe Fotoğraf">
+            
+            <p>Umarım bu özel pembe an hoşuna gitmiştir!</p>
+            <button class="close-button" onclick="hidePhoto()">Kapat</button>
+        </div>
+    </div>
+
+    <script>
+        function toggleEnvelope() {
+            const envelope = document.querySelector('.envelope');
+            envelope.classList.toggle('open');
+        }
+
+        function showPhoto(event) {
+            event.stopPropagation(); // Zarfın kapanmasını engellemek için
+            const photoContainer = document.getElementById('photoContainer');
+            photoContainer.classList.add('visible');
+        }
+
+        function hidePhoto() {
+            const photoContainer = document.getElementById('photoContainer');
+            photoContainer.classList.remove('visible');
+        }
+    </script>
+</body>
+</html>
+
