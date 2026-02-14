@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sihirli Zarf</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            overflow: hidden; /* Taşmaları engellemek için */
+        }
+
+        .container {
+            position: relative;
+            width: 400px; /* Zarf genişliği */
+            height: 250px; /* Zarf yüksekliği */
+            perspective: 1000px; /* 3D efekti için */
+        }
+
+        .envelope {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #f9d423; /* Zarf rengi */
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            transition: transform 1s ease-in-out, background-color 0.5s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            z-index: 2; /* Mektubun üstünde durması için */
+        }
+
+        .envelope:hover {
+            background-color: #fce883; /* Üzerine gelince renk değişimi */
+        }
+
+        /* Zarfın üst kapağı */
+        .envelope-flap {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%; /* Kapağın yarısı */
+            background-color: #f9d423;
+            border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            transform-origin: top; /* Üstten dönecek */
+            transition: transform 1s ease-in-out, background-color 0.5s;
+            z-index: 3; /* En üstte durması için */
+        }
+
+        .envelope-flap::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #f9d423 50%, #f7c900 50%); /* Zarf kapağı üçgen efekti */
+            border-radius: 10px;
+        }
+
+        /* Açıldığında zarf kapağının görünümü */
+        .envelope.open .envelope-flap {
+            transform: rotateX(180deg); /* Kapağı aç */
+            background-color: #f7c900;
+        }
+        .envelope.open .envelope-flap::before {
+            background: linear-gradient(135deg, #f7c900 50%, #f9d423 50%);
+        }
+
+        .letter {
+            position: absolute;
+            top: 10%;
+            left: 10%;
+            width: 80%;
+            height: 80%;
+            background-color: white;
+            border-radius: 5px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            box-sizing: border-box;
+            transform: translateY(100%) scale(0.8); /* Başlangıçta zarfın altında ve küçük */
+            opacity: 0;
+            transition: transform 1s ease-in-out, opacity 1s ease-in-out;
+            z-index: 1; /* Zarfın altında */
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .envelope.open .letter {
+            transform: translateY(0) scale(1); /* Zarf açılınca yukarı çık ve büyüt */
+            opacity: 1;
+            transition-delay: 0.5s; /* Zarf kapağı açıldıktan sonra mektup gelsin */
+        }
+
+        .letter-content {
+            font-size: 1.1em;
+            line-height: 1.6;
+            color: #33
