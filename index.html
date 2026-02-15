@@ -166,6 +166,8 @@
             transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
             opacity: 0;
             text-align: center;
+            width: 90%; /* Genişlik sabitleyelim, max-width'i geçmesin */
+            height: auto; /* İçeriğe göre yükseklik */
         }
 
         .photo-container.visible {
@@ -174,14 +176,53 @@
             transform: translate(-50%, -50%) scale(1); /* Normal boyutuna gelir */
         }
 
-        .photo-container img {
+        /* Fotoğraf galerisi stilleri */
+        .photo-gallery {
+            position: relative;
+            width: 100%;
+            /* max-height: 550px; Eğer galeriyi sabit bir yükseklikte tutmak istersek */
+            overflow: hidden; /* Gerekirse taşan görselleri gizle */
+            margin-bottom: 20px;
+        }
+
+        .gallery-img {
             max-width: 100%;
             max-height: 550px; /* Fotoğrafın maksimum yüksekliği arttırıldı */
             width: auto; /* Genişliği otomatik ayarla */
             height: auto; /* Yüksekliği otomatik ayarla */
             border-radius: 10px;
-            display: block;
-            margin: 0 auto 20px auto; /* Alttan boşluk bırak */
+            display: none; /* Başlangıçta tüm görselleri gizle */
+            margin: 0 auto; /* Ortala */
+        }
+        
+        /* Navigasyon butonları */
+        .gallery-nav {
+            position: absolute;
+            top: 50%; /* Dikey ortala */
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 5px; /* Kenarlardan boşluk */
+            box-sizing: border-box;
+        }
+
+        .nav-button {
+            background-color: rgba(255, 255, 255, 0.7); /* Yarı şeffaf beyaz */
+            color: #333;
+            border: none;
+            border-radius: 50%; /* Yuvarlak butonlar */
+            padding: 10px 15px;
+            cursor: pointer;
+            font-size: 1.5em;
+            transition: background-color 0.3s, color 0.3s;
+            line-height: 1; /* Okların dikey hizalaması için */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-button:hover {
+            background-color: #ff69b4; /* Pembe hover */
+            color: white;
         }
 
         .photo-container p {
@@ -219,27 +260,50 @@
         <!-- Mektup - zarf kaybolunca bu belirecek -->
         <div class="letter" id="theLetter">
             <div class="letter-content">
-                <p> Merhaba Canım Dostum,</p>
+                <p>Merhaba Canım Dostum,</p>
                 <p>Hayat bazen yorucu bir labirent gibi olsa da, senin varlığın benim yolumu hep aydınlattı. Liseden bugüne, tam 4 yıldır her anımı güzelleştirdiğin için teşekkür ederim. Bu butona her bastığında sadece geçmişe bakmıyoruz; her zaman arkanda, bir adım ötendeyim. Kalbimdeki yerin çok özel, iyi ki hayatımdasın!</p>
                 <p style="text-align: right; margin-top: 25px;">Sevgilerle,</p>
                 <p style="text-align: right;">Azra</p>
             </div>
-            <button class="photo-button" onclick="showPhoto(event)">Pembe Fotoğrafı Gör!</button>
+            <button class="photo-button" onclick="showPhoto(event)">Pembe Fotoğrafları Gör!</button>
         </div>
 
         <!-- Fotoğraf konteyneri -->
         <div class="photo-container" id="photoContainer">
-            <!-- BURAYI DÜZENLEMELİSİNİZ! -->
-            <!-- GitHub deponuza yüklediğiniz fotoğrafın adını buraya yazın. -->
-            <!-- Örneğin, fotoğrafınızın adı 'benim_pembe_fotom.jpg' ise src="benim_pembe_fotom.jpg" olacaktır. -->
-            <img src="surpriz_fotograf.jpg" alt="Sürpriz Pembe Fotoğraf">
+            <div class="photo-gallery">
+                <!-- BURADAKİ FOTOĞRAF ADLARINI KENDİ FOTOĞRAFLARINIZIN ADIYLA DEĞİŞTİRMELİSİNİZ! -->
+                <!-- Her bir fotoğraf dosyasını GitHub deponuza yüklediğinizden emin olun. -->
+                <!-- Örneğin, fotoğrafınız 'ben1.jpeg' ise src="ben1.jpeg" olacaktır. -->
+                <img src="AZRA.jpeg" alt="Sürpriz Pembe Fotoğraf 1" class="gallery-img">
+                <img src="Eylül.jpeg" alt="Sürpriz Pembe Fotoğraf 2" class="gallery-img">
+                <img src="AzEy.jpeg" alt="Sürpriz Pembe Fotoğraf 3" class="gallery-img">
+                <!-- İsterseniz daha fazla img etiketi ekleyerek fotoğraf sayısını artırabilirsiniz. -->
+            </div>
+            <div class="gallery-nav">
+                <button class="nav-button prev-button" onclick="changePhoto(-1)">&#10094;</button> <!-- Sol ok -->
+                <button class="nav-button next-button" onclick="changePhoto(1)">&#10095;</button> <!-- Sağ ok -->
+            </div>
             
-            <p>Umarım bu özel pembe an hoşuna gitmiştir!</p>
+            <p>Umarım bu özel pembe anlar hoşuna gitmiştir!</p>
             <button class="close-button" onclick="hidePhoto()">Kapat</button>
         </div>
     </div>
 
     <script>
+        let currentPhotoIndex = 0;
+        const photos = document.querySelectorAll('.gallery-img'); // Tüm fotoğraf öğelerini seç
+
+        // Belirli bir fotoğrafı gösterir, diğerlerini gizler
+        function showSpecificPhoto(index) {
+            photos.forEach((photo, i) => {
+                if (i === index) {
+                    photo.style.display = 'block'; // Göster
+                } else {
+                    photo.style.display = 'none'; // Gizle
+                }
+            });
+        }
+
         function toggleEnvelope(wrapper) {
             wrapper.classList.toggle('open'); // envelope-wrapper'a 'open' sınıfını ekle/kaldır
             const letter = document.getElementById('theLetter');
@@ -250,14 +314,32 @@
             event.stopPropagation(); // Olayın yukarı yayılmasını (zarfın kapanmasını) engelle
             const photoContainer = document.getElementById('photoContainer');
             photoContainer.classList.add('visible');
+            
+            currentPhotoIndex = 0; // Galeri açıldığında ilk fotoğrafı göster
+            showSpecificPhoto(currentPhotoIndex);
+        }
+
+        function changePhoto(direction) { // direction: 1 ileri, -1 geri
+            currentPhotoIndex += direction;
+
+            // Fotoğraf listesinin başında veya sonunda döngü yap
+            if (currentPhotoIndex < 0) {
+                currentPhotoIndex = photos.length - 1;
+            } else if (currentPhotoIndex >= photos.length) {
+                currentPhotoIndex = 0;
+            }
+            showSpecificPhoto(currentPhotoIndex);
         }
 
         function hidePhoto() {
             const photoContainer = document.getElementById('photoContainer');
             photoContainer.classList.remove('visible');
+            
+            // Kapatılırken tüm fotoğrafları gizle ve index'i sıfırla
+            photos.forEach(photo => photo.style.display = 'none');
+            currentPhotoIndex = 0; 
         }
     </script>
 </body>
 </html>
-
 
